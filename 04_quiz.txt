@@ -1,0 +1,105 @@
+1.    What will be the output of the following code?
+```python
+'apple' + 'pie'
+```
+  *   a) apple+pie
+  *   b) error
+  *   c) apple pie
+  *   d) applepie
+
+2.    What is the output of the following code?
+```python
+s = '   strip me   '
+print(s.strip())
+```
+  *   a) 'strip me'
+  *   b) 'stripme'
+  *   c) '   strip me   '
+  *   d) 'strip me '
+
+3.    What does the following code output?
+```python
+s = 'Python programming'
+print(s.find('prog'))
+```
+  *   a) -1
+  *   b) 7
+  *   c) 6
+  *   d) 11
+
+4.    What will be the output of the following code?
+```python
+s = 'abcdefgh'
+print(s[::2])
+```
+  *   a) 'bdfh'
+  *   b) 'aceg'
+  *   c) 'ab'
+  *   d) 'gh'
+
+5.    What is the output of the following code?
+```python
+s = 'python'
+print(s[2:5])
+```
+  *   a) 'tho'
+  *   b) 'ytho'
+  *   c) 'pyth'
+  *   d) 'pyt'
+
+6.    What does the function `len()` do when applied to a string?
+
+  *   a) The number of lines in the string
+  *   b) The number of words in the string
+  *   c) The number of characters in the string
+  *   d) The number of alphabet letters in the string
+
+7.    What does the following code output?
+```python
+'matlab'>'python'
+```
+  *   a) `False`
+  *   b) `TypeError: unsupported operand type(s) for >: 'str' and 'str'`
+  *   c) `True`
+  *   d) `'matlab>python'`
+
+8.    What is stored in the variable `my_string` when the code is run?
+```python
+my_string = 'ababa_aba'.replace('aba', 'ccc')
+```
+  *   a) `'abccc_ccc'`
+  *   b) `'ccc_ccc'`
+  *   c) `'ababa_ccc'`
+  *   d) `'cccba_ccc'`
+
+9.    Fill in the blank. What is the missing format specifier?
+```python
+print(f'1/7 is approximately {100/7:____}%')<br/>1/7 is approximately 14.2857%
+```
+  *   a) `p`
+  *   b) `4f`
+  *   c) `02.4d`
+  *   d) `2.4f`
+
+10.    What will the variable `my_string` contain after the following code is executed?
+```python
+my_string = 'Python Programming'.replace('P', 'p', 1)
+```
+  *   a) `'python programming'`
+  *   b) `'Python Programming'`
+  *   c) `'python Programming'`
+  *   d) `'Pythonn Programming'`
+
+11.    which is NOT a valid string method?
+
+  *   a) `some_string.find()`
+  *   b) `some_string.upper()`
+  *   c) `some_string.remove()`
+  *   d) `some_string.replace()`
+
+12.    Which line of code will throw an error?
+
+  *   a) `'1234' < '5')`
+  *   b) `'1234' + '5'`
+  *   c) `'1234' + 5`
+  *   d) `'1234' * 5`
