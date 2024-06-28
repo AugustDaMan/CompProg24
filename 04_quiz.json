@@ -2,35 +2,36 @@
     {
         "id": 0,
         "status": "success",
-        "chatgpt_text": "What will be the output of the following code?\n\npython\nCopy code\n'apple' + 'pie'\na) apple pie\nb) applepie\nc) apple+pie\nd) error",
+        "chatgpt_text": "What will be stored in the variable `apple_pie`?\n\npython\nCopy code\napple_pie = 'apple' + 'pie'\na) 'apple pie'\nb) 'applepie'\nc) apple+pie\nd) 'apple_pie'",
+        "options_are_code": true,
         "subject": "string_concatenation",
         "type": ""
     },
     {
         "id": 1,
         "status": "success",
-        "chatgpt_text": "What is the output of the following code?\n\npython\nCopy code\ns = '   strip me   '\nprint(s.strip())\na) 'strip me'\nb) 'strip me '\nc) '   strip me   '\nd) 'stripme'",
+        "chatgpt_text": "What will be printed?\n\npython\nCopy code\ns = '   strip me   '\nprint(s.strip())\na) 'strip me'\nb) 'strip me '\nc) '   strip me   '\nd) 'stripme'",
         "subject": "string_method_strip",
         "type": ""
     },
     {
         "id": 2,
         "status": "success",
-        "chatgpt_text": "What does the following code output?\n\npython\nCopy code\ns = 'Python programming'\nprint(s.find('prog'))\na) 7\nb) 6\nc) -1\nd) 11",
+        "chatgpt_text": "What does the following code output?\n\npython\nCopy code\ns = 'Python programming'\ns.find('prog')\na) 7\nb) 6\nc) -1\nd) 11",
         "subject": "string_method_find",
         "type": ""
     },
     {
         "id": 3,
         "status": "success",
-        "chatgpt_text": "What will be the output of the following code?\n\npython\nCopy code\ns = 'abcdefgh'\nprint(s[::2])\na) 'aceg'\nb) 'gh'\nc) 'ab'\nd) 'bdfh'",
+        "chatgpt_text": "What will be printed?\n\npython\nCopy code\ns = 'abcdefgh'\nprint(s[::2])\na) 'aceg'\nb) 'gh'\nc) 'ab'\nd) 'bdfh'",
         "subject": "string_indexing",
         "type": ""
     },
     {
         "id": 4,
         "status": "success",
-        "chatgpt_text": "What is the output of the following code?\n\npython\nCopy code\ns = 'python'\nprint(s[2:5])\na) 'tho'\nb) 'pyth'\nc) 'pyt'\nd) 'ytho'",
+        "chatgpt_text": "What will be printed?\n\npython\nCopy code\ns = 'python'\nprint(s[2:5])\na) 'tho'\nb) 'pyth'\nc) 'pyt'\nd) 'ytho'",
         "subject": "string_indexing",
         "type": ""
     },
@@ -80,8 +81,8 @@
     {
         "id": 8,
         "status": "success",
-        "question": "Fill in the blank. What is the missing format specifier?",
-        "code": "print(f'1/7 is approximately {100/7:____}%')<br/>1/7 is approximately 14.2857%",
+        "question": "Fill in the blank. What is the missing format specifier to print `1/7 is approximately 14.2857%`?",
+        "code": "print(f'1/7 is approximately {100/7:____}%')",
         "options_are_code": true,
         "options": {
             "a": "2.4f",
@@ -130,7 +131,7 @@
             "a": "'1234' + 5",
             "b": "'1234' + '5'",
             "c": "'1234' * 5",
-            "d": "'1234' < '5')"
+            "d": "'1234' < '5'"
         },
         "subject": "string_operators",
         "type": ""

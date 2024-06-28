@@ -1,105 +1,105 @@
-1.    What will be the output of the following code?
+1.    What will be stored in the variable `apple_pie`?
 ```python
-'apple' + 'pie'
+apple_pie = 'apple' + 'pie'
 ```
-  *   a) apple+pie
-  *   b) error
-  *   c) apple pie
-  *   d) applepie
+  *   a) `'applepie'`
+  *   b) `'apple pie'`
+  *   c) `'apple_pie'`
+  *   d) `apple+pie`
 
-2.    What is the output of the following code?
+2.    What will be printed?
 ```python
 s = '   strip me   '
 print(s.strip())
 ```
-  *   a) 'strip me'
-  *   b) 'stripme'
+  *   a) 'strip me '
+  *   b) 'strip me'
   *   c) '   strip me   '
-  *   d) 'strip me '
+  *   d) 'stripme'
 
 3.    What does the following code output?
 ```python
 s = 'Python programming'
-print(s.find('prog'))
+s.find('prog')
 ```
   *   a) -1
-  *   b) 7
-  *   c) 6
+  *   b) 6
+  *   c) 7
   *   d) 11
 
-4.    What will be the output of the following code?
+4.    What will be printed?
 ```python
 s = 'abcdefgh'
 print(s[::2])
 ```
   *   a) 'bdfh'
-  *   b) 'aceg'
+  *   b) 'gh'
   *   c) 'ab'
-  *   d) 'gh'
+  *   d) 'aceg'
 
-5.    What is the output of the following code?
+5.    What will be printed?
 ```python
 s = 'python'
 print(s[2:5])
 ```
   *   a) 'tho'
-  *   b) 'ytho'
-  *   c) 'pyth'
-  *   d) 'pyt'
+  *   b) 'pyth'
+  *   c) 'pyt'
+  *   d) 'ytho'
 
 6.    What does the function `len()` do when applied to a string?
 
-  *   a) The number of lines in the string
-  *   b) The number of words in the string
-  *   c) The number of characters in the string
+  *   a) The number of words in the string
+  *   b) The number of characters in the string
+  *   c) The number of lines in the string
   *   d) The number of alphabet letters in the string
 
 7.    What does the following code output?
 ```python
 'matlab'>'python'
 ```
-  *   a) `False`
+  *   a) `'matlab>python'`
   *   b) `TypeError: unsupported operand type(s) for >: 'str' and 'str'`
   *   c) `True`
-  *   d) `'matlab>python'`
+  *   d) `False`
 
 8.    What is stored in the variable `my_string` when the code is run?
 ```python
 my_string = 'ababa_aba'.replace('aba', 'ccc')
 ```
-  *   a) `'abccc_ccc'`
-  *   b) `'ccc_ccc'`
-  *   c) `'ababa_ccc'`
+  *   a) `'ababa_ccc'`
+  *   b) `'abccc_ccc'`
+  *   c) `'ccc_ccc'`
   *   d) `'cccba_ccc'`
 
-9.    Fill in the blank. What is the missing format specifier?
+9.    Fill in the blank. What is the missing format specifier to print `1/7 is approximately 14.2857%`?
 ```python
-print(f'1/7 is approximately {100/7:____}%')<br/>1/7 is approximately 14.2857%
+print(f'1/7 is approximately {100/7:____}%')
 ```
   *   a) `p`
-  *   b) `4f`
-  *   c) `02.4d`
-  *   d) `2.4f`
+  *   b) `2.4f`
+  *   c) `4f`
+  *   d) `02.4d`
 
 10.    What will the variable `my_string` contain after the following code is executed?
 ```python
 my_string = 'Python Programming'.replace('P', 'p', 1)
 ```
-  *   a) `'python programming'`
-  *   b) `'Python Programming'`
+  *   a) `'Pythonn Programming'`
+  *   b) `'python programming'`
   *   c) `'python Programming'`
-  *   d) `'Pythonn Programming'`
+  *   d) `'Python Programming'`
 
 11.    which is NOT a valid string method?
 
-  *   a) `some_string.find()`
-  *   b) `some_string.upper()`
-  *   c) `some_string.remove()`
-  *   d) `some_string.replace()`
+  *   a) `some_string.replace()`
+  *   b) `some_string.find()`
+  *   c) `some_string.upper()`
+  *   d) `some_string.remove()`
 
 12.    Which line of code will throw an error?
 
-  *   a) `'1234' < '5')`
-  *   b) `'1234' + '5'`
-  *   c) `'1234' + 5`
-  *   d) `'1234' * 5`
+  *   a) `'1234' + 5`
+  *   b) `'1234' * 5`
+  *   c) `'1234' < '5'`
+  *   d) `'1234' + '5'`
