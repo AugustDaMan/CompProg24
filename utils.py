@@ -284,7 +284,6 @@ def ascending_reorder_of_exercises(ipynb_path,
             if lines and lines[0].startswith(exercise_prefix):
                 if verbose and replace_all_exercise_names and exercise_counter>0:
                     print(f"Replaced {replacements} instances of exercise {s_old} with {s_new}.")
-                print("LINES0 before",lines[0],weeknum,exercise_counter)
                 replacements = 0
                 exercise_counter += 1
                 start = len(exercise_prefix)
@@ -303,7 +302,6 @@ def ascending_reorder_of_exercises(ipynb_path,
                     s_new = f"{weeknum}.{new_exercise_str}"
                 else:
                     s_new = s_old
-                print("LINES0 after",lines[0],weeknum,exercise_str,exercise_counter)
         if replace_all_exercise_names and exercise_counter>0:
             #replace all instances of the exercise str in both markdown and code cells
             replacements += cell['source'].count(s_old)
@@ -354,6 +352,72 @@ def format_x_subexercise(ipynb_path, exercise_str="4.14",prefix="###"):
     with open(ipynb_path, 'w', encoding='utf-8') as f:
         write(notebook, f)
     return f"Updated subexercise labels up to {exercise_prefix}{alphabet[subexercise_counter-1]}"
+
+def change_weeknum(old_weeknum,
+                    new_weeknum,
+                    rename_inside_exercise=True,
+                    rename_files=True,
+                    rename_folder=True,
+                    exercise_prefix = lambda weeknum: f"## Exercise {weeknum}.",
+                    exercise_suffix = ":",
+                    replace_all_exercise_names=True):
+    """
+    Function to change the week number of a folder of exercises/qiuz files.
+    It can also rename the files inside the exercises notebook.
+
+    Parameters:
+    old_weeknum (str,int): the old week number. Assumes files are 
+        contained in a folder named e.g. "W04".
+    new_weeknum (str,int): the new week number.
+    rename_inside_file (bool): if True, renames the exercise numbers
+        inside the file.
+    """
+    if old_weeknum==new_weeknum:
+        return
+    foldername = f"W{int(old_weeknum):02d}"
+    valid_start_ends = [(f"{int(old_weeknum):02d}_","FULL.ipynb"),
+                        (f"{int(old_weeknum):02d}_","quiz.json"),
+                        (f"{int(old_weeknum):02d}_","quiz.txt")]
+    md_startswith_old = exercise_prefix(old_weeknum)
+    md_startswith_new = exercise_prefix(new_weeknum)
+    exercise_str = None
+    replacements = 0
+    for filename in os.listdir(foldername):
+        basename = os.path.basename(filename)
+        for start,end in valid_start_ends:
+            if basename.startswith(start) and basename.endswith(end):
+                if end.endswith(".ipynb") and rename_inside_exercise:
+                    ipynb_path = os.path.join(foldername,basename)
+                    with open(ipynb_path, 'r', encoding='utf-8') as f:
+                        notebook = read(f, as_version=NO_CONVERT)
+                    is_first_cell = True
+                    for cell in notebook['cells']:
+                        if cell['cell_type'] == 'markdown':
+                            if is_first_cell:
+                                is_first_cell = False
+                                cell['source'] = cell['source'].replace(f"W{old_weeknum}:",f"W{new_weeknum}:")
+                            if cell['source'].startswith(md_startswith_old):
+                                lines = cell['source'].split('\n')
+                                if lines and lines[0].startswith(md_startswith_old):
+                                    lines[0] = lines[0].replace(md_startswith_old,md_startswith_new)
+                                    cell['source'] = '\n'.join(lines)
+                                exercise_str = lines[0][len(md_startswith_old):lines[0].find(exercise_suffix)]
+                                assert exercise_str.isdigit(), f"Invalid format for exercise: {lines[0]}, expected an integer after '{md_startswith_old}' and before '{exercise_suffix}'."
+                        if replace_all_exercise_names and (exercise_str is not None):
+                            #replace all instances of the exercise str in both markdown and code cells
+                            replacements += cell['source'].count(f"{old_weeknum}.{int(exercise_str)}")
+                            cell['source'] = cell['source'].replace(f"{old_weeknum}.{int(exercise_str)}",
+                                                                    f"{new_weeknum}.{int(exercise_str)}")
+                    
+                        with open(ipynb_path, 'w', encoding='utf-8') as f:
+                            write(notebook, f)
+                if rename_files:
+                    new_basename = basename.replace(start,f"{int(new_weeknum):02d}_")
+                    os.rename(os.path.join(foldername,basename),os.path.join(foldername,new_basename))
+                
+    if rename_folder:
+        os.rename(foldername,f"W{int(new_weeknum):02d}")
+
 
 def check_info_exists(ipynb_path,
                     weeknum="auto",
@@ -414,7 +478,7 @@ def check_info_exists(ipynb_path,
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Format subexercise labels in a notebook.')
-    parser.add_argument("--process", type=str, help="Process to run.",default=0)
+    parser.add_argument("--process", type=int, help="Process to run.",default=0)
     parser.add_argument('--ipynb_path', type=str, help='Path to the notebook file.', 
                         default="./04_iteration_and_string_FULL.ipynb")
     parser.add_argument('--exercise_str', type=str, help='Exercise string to format (e.g. "4.14").', 
@@ -422,12 +486,18 @@ if __name__ == "__main__":
     parser.add_argument('--prefix', type=str, help='Prefix for exercise headers.', 
                         default="###")
     args = parser.parse_args()
+    
     if args.process==0:
-        print("Process 1: Format subexercise labels in a notebook.")
+        print("Process 0: Format subexercise labels in a notebook.")
         print(format_x_subexercise(args.ipynb_path, args.exercise_str, args.prefix))
     elif args.process==1:
-        print("Process 2: Reorder exercises in a notebook.")
+        print("Process 1: Reorder exercises in a notebook.")
         print(ascending_reorder_of_exercises(args.ipynb_path))
+    elif args.process==2:
+        print("Process 2: Change week number in a folder of exercises.")
+        old_weeknum = input("Enter the old week number: ")
+        new_weeknum = input("Enter the new week number: ")
+        change_weeknum(old_weeknum, new_weeknum)
     else:
         raise ValueError(f"Invalid process: {args.process}.")
     
