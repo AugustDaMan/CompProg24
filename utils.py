@@ -3,6 +3,12 @@ import json
 import string
 from nbformat import read, write, NO_CONVERT
 import os
+import ast
+import traceback
+import json
+import IPython
+import contextlib
+import io
 
 def extract_mcq_from_raw_text(raw_question,
                               opts="abcd",
@@ -418,7 +424,136 @@ def change_weeknum(old_weeknum,
     if rename_folder:
         os.rename(foldername,f"W{int(new_weeknum):02d}")
 
+def repl(tag, globals_, 
+         filename=None, 
+         ignore_beginswith=["##"], 
+         ignore_endsiwth=["#ignore"],
+         code_prefix=">>> ", 
+         save_markdown=False, 
+         do_print=False, 
+         return_output=True):
+    """ A function to use on a line in a jupyter notebook in order to
+    simulate the code execution and print the output in REPL format.
 
+    Args:
+        tag (str): A unique tag to identify the cell.
+        globals_ (dict): A dictionary of global variables to use in the code.
+            Should contain at least the variable 'filename' if filename is None.
+            In almost all cases you should simply pass globals() as this argument.
+        filename (str, optional): The filename of the notebook. Defaults to None,
+            in which case it will try to use the variable 'filename' from globals_.
+        ignore_beginswith (list, optional): Lines excluded from the REPL rendering 
+            when they begin with one of the list elements. Defaults to ["##"].
+        ignore_endsiwth (list, optional): Lines excluded from the REPL rendering 
+            when they end with one of the list elements. Defaults to ["#ignore"].
+        code_prefix (str, optional): Prefix to render in front of lines of code. 
+            Defaults to ">>> ".
+        save_markdown (bool, optional): Should a cell be saved in the notebook directly
+            after the tagged cell. It will replace a previously rendered markdown cell
+            if found (identified by a hidden comment on line 1). Otherwise it creates a
+            new markdown cell. Defaults to False.
+        do_print (bool, optional): Should the output string be printed. Defaults to False.
+        return_output (bool, optional): Should the output string be returned. Defaults to True.
+
+    Returns:
+        str: The output string if return_output is True (otherwise None).
+    """
+    if filename is None:
+        assert "filename" in globals_, "filename is None and 'filename' is not in globals. Set filename or set 'filename' in globals."
+        filename = globals_["filename"]
+    with open(filename, 'r', encoding='utf-8') as f:
+        notebook = read(f, as_version=NO_CONVERT)
+    cell_line_match = f"utils.repl('{tag}',"
+    matches = []
+    for match_idx,cell in enumerate(notebook['cells']):
+        if cell['cell_type'] == 'code':
+            for line in cell['source'].split('\n'):
+                if line.startswith(cell_line_match):
+                    matches.append(match_idx)
+    assert len(matches)==1, f"Found {len(matches)} matches for tag={tag}. A line in the cell should start with {cell_line_match}. Expected exactly 1."
+    code = ""
+    for line in notebook['cells'][matches[0]]['source'].split('\n'):
+        if not line.startswith(cell_line_match):
+            code += line+'\n'
+    try:
+        lines_all = code.split('\n')
+        def get_object_name(node):
+            if isinstance(node, ast.Name):
+                return node.id
+            elif isinstance(node, ast.Attribute):
+                return get_object_name(node.value) + "." + node.attr
+            return None  
+        def get_function_name(node):
+            if isinstance(node.value.func, ast.Name):
+                return node.value.func.id
+            elif isinstance(node.value.func, ast.Attribute):
+                obj_name = get_object_name(node.value.func.value)
+                func_name = node.value.func.attr
+                return f"{obj_name}.{func_name}"
+            raise TypeError("get_funtion_name failed", type(node))
+    except:
+        print(traceback.format_exc())
+    try:
+        parsed = ast.parse(code)
+    except:
+        print(traceback.format_exc())
+    try:
+        output = io.StringIO()
+
+        # Use contextlib.redirect_stdout to capture print output
+        with contextlib.redirect_stdout(output):
+            prev_end = 0
+            for node in ast.iter_child_nodes(parsed):
+                while prev_end < node.lineno-1: # Print any blank lines
+                    if not any ([lines_all[prev_end].startswith(prefix) for prefix in ignore_beginswith]):
+                        print(code_prefix+lines_all[prev_end])
+                    prev_end += 1
+                lines = lines_all[node.lineno-1:node.end_lineno]
+                prev_end = node.end_lineno
+                lines_print = [l for l in lines if not any([l.endswith(suffix) for suffix in ignore_endsiwth])]
+                for idx, line in enumerate(lines_print):
+                    if idx==0:
+                        print(code_prefix+line)
+                    else:
+                        print("...", line)
+                if isinstance(node, (ast.FunctionDef, ast.Assign, ast.ImportFrom, ast.ClassDef)):
+                    try:
+                        exec('\n'.join(lines), globals_)
+                    except:
+                        print(traceback.format_exc())
+                        break
+                elif isinstance(node, ast.Expr):
+                    try:
+                        returned = eval('\n'.join(lines), globals_)
+                        if returned is not None:
+                            print(returned.__repr__())
+                    except:
+                        print(traceback.format_exc())
+                        break
+                    # Save things we need for documentation
+                    if isinstance(node.value, ast.Call):
+                        arguments = [get_function_name(node)]
+                        for arg in node.value.args:
+                            arg = eval(ast.get_source_segment(code, arg))
+                            arguments.append(type(arg).__name__)
+                        for arg in node.value.keywords:
+                            arg = eval(ast.get_source_segment(code, arg).split('=')[1])
+                            arguments.append(type(arg).__name__)
+                else:
+                    print("Unhandled ast class:", type(node))
+    except:
+        print(traceback.format_exc())
+    output = output.getvalue()
+    if do_print:
+        print(output)
+    if save_markdown:
+        new_cell_content = f"[comment]: <> (repl)"
+        new_cell_content += f"\n```python\n{output}\n```"
+        new_cell = {'cell_type': 'markdown', 'metadata': {}, 'source': new_cell_content}
+        notebook['cells'].insert(matches[0]+1, new_cell)
+    if return_output:
+        return output
+      
 def check_info_exists(ipynb_path,
                     weeknum="auto",
                     exercise_prefix = lambda weeknum: f"## Exercise {weeknum}.",
